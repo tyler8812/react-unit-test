@@ -1,39 +1,34 @@
-import "./App.css";
-import { useState, useEffect } from "react";
-import React from "react";
-import { formatUserName } from "./utils";
-import axios from "axios";
+import React, { useEffect, useState } from "react";
+import { DropdownList } from "./components/dropdownlist/DropDownList";
+
+const labels = {
+  hide: "Hide Data",
+  show: "Show Data",
+};
+
+const fakeApiCall = () => {
+  return new Promise((resolve) => {
+    resolve([
+      { value: "1", label: "Item 1" },
+      { value: "2", label: "Item 2" },
+      { value: "3", label: "Item 3" },
+      { value: "4", label: "Item 4" },
+      { value: "5", label: "Item 5" },
+    ]);
+  });
+};
 
 function App() {
-  const [users, setUsers] = useState([]);
+  const [data, setData] = useState([]);
   useEffect(() => {
-    let mounted = true;
-    const getUsers = async () => {
-      const response = await axios.get(
-        "https://jsonplaceholder.typicode.com/users"
-      );
-      if (mounted) {
-        setUsers(response.data);
-      }
-    };
-    getUsers();
+    fakeApiCall().then((data) => {
+      setData(data);
+    });
   }, []);
   return (
-    <div className="App">
-      <div>Users:</div>
-      {users.length === 0 ? (
-        <div key="loading">Loading users...</div>
-      ) : (
-        <ul data-testid="user-list">
-          {users.map((user) => (
-            <li key={user.name + user.username} data-testid="user-item">
-              {user.name + formatUserName(user.username)}
-            </li>
-          ))}
-        </ul>
-      )}
+    <div>
+      <DropdownList data={data} labels={labels} onRemoveItem={() => {}} />
     </div>
   );
 }
-
 export default App;
